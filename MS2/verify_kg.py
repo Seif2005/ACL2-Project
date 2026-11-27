@@ -30,7 +30,8 @@ def verify_graph(driver, database, data):
     }
     node_ids = {}
     records, _, _ = driver.execute_query(
-        "MATCH (n) RETURN elementId(n) AS id, labels(n) AS labels, properties(n) AS props",
+        "MATCH (n) WHERE NOT n:ConnectionTest "
+        "RETURN elementId(n) AS id, labels(n) AS labels, properties(n) AS props",
         database_=database,
     )
     check(len(records) == len(expected_nodes), "Total node count differs from the CSVs")
@@ -50,7 +51,8 @@ def verify_graph(driver, database, data):
         node_ids[record["id"]] = key
     check(len(set(node_ids.values())) == len(expected_nodes), "Duplicate node identifiers")
     records, _, _ = driver.execute_query(
-        "MATCH (a)-[r]->(b) RETURN elementId(a) AS source, type(r) AS type, "
+        "MATCH (a)-[r]->(b) WHERE NOT a:ConnectionTest AND NOT b:ConnectionTest "
+        "RETURN elementId(a) AS source, type(r) AS type, "
         "elementId(b) AS target, properties(r) AS props", database_=database,
     )
     check(len(records) == len(expected_edges), "Total relationship count differs from the CSVs")
