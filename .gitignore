@@ -1,5 +1,7 @@
 .venv/
+.python/
 .verification/
 Main.executed.ipynb
 __pycache__/
 .ipynb_checkpoints/
+MS2/config.txt
